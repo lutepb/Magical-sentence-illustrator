@@ -1,13 +1,18 @@
-"scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start"
-},
-"dependencies": {
-  "next": "...",
-  "react": "...",
-  "react-dom": "...",
-  "html2canvas": "...",
-  "framer-motion": "...",
-  "lucide-react": "..."
+{
+  "name": "magical-sentence-illustrator",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "framer-motion": "^10.16.1",
+    "html2canvas": "^1.4.1",
+    "lucide-react": "^0.356.0",
+    "next": "^14.2.30",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  }
 }

@@ -1,16 +1,15 @@
-// pages/api/generate-image.ts
-import type { NextApiRequest, NextApiResponse } from "next";
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   const { prompt } = req.body;
-  if (!prompt) return res.status(400).json({ error: "Missing prompt" });
+  if (!prompt) {
+    return res.status(400).json({ error: "Missing prompt" });
+  }
 
   try {
-    const openaiRes = await fetch("https://api.openai.com/v1/images/generations", {
+    const response = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
@@ -24,11 +23,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }),
     });
 
-    const data = await openaiRes.json();
-    if (!data?.data?.[0]?.url) throw new Error("No image returned from OpenAI");
+    const data = await response.json();
+    if (!data?.data?.[0]?.url) throw new Error("No image returned");
 
     res.status(200).json({ imageUrl: data.data[0].url });
   } catch (err) {
-    res.status(500).json({ error: (err as Error).message });
+    res.status(500).json({ error: err.message });
   }
 }
