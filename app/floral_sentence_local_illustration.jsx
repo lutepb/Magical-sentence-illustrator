@@ -38,13 +38,21 @@ export default function MagicalSentenceApp() {
         body: JSON.stringify({ prompt: sentence })
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Server error ${response.status}: ${errorText}`);
+      }
 
-      if (!response.ok) throw new Error(data?.error || 'Image generation failed');
-      if (!data?.imageUrl) throw new Error("No image returned");
-
-      setImageUrl(data.imageUrl);
-      setSubmitted(true);
+      if (contentType && contentType.includes("application/json")) {
+        const data = await response.json();
+        if (!data?.imageUrl) throw new Error("No image returned");
+        setImageUrl(data.imageUrl);
+        setSubmitted(true);
+      } else {
+        const text = await response.text();
+        throw new Error(`Unexpected response: ${text.slice(0, 100)}...`);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
