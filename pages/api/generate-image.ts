@@ -8,10 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { prompt } = req.body;
   const apiKey = process.env.OPENAI_API_KEY;
-
-  if (!apiKey) {
-    return res.status(500).json({ error: 'Missing OpenAI API key' });
-  }
+  if (!apiKey) return res.status(500).json({ error: 'Missing OpenAI API key' });
 
   try {
     const response = await fetch('https://api.openai.com/v1/images/generations', {
@@ -21,20 +18,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        prompt: `A beautiful magical floral background inspired by the phrase: "${prompt}"`,
+        prompt: `A beautiful magical floral background: ${prompt}`,
         n: 1,
         size: '1024x1024',
       }),
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText);
+      const err = await response.text();
+      throw new Error(err);
     }
 
     const data = await response.json();
-    res.status(200).json({ imageUrl: data.data[0].url });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message || 'Unknown error' });
+    const imageUrl = data.data[0].url;
+    res.status(200).json({ imageUrl });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
   }
 }
