@@ -1,38 +1,23 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+// pages/api/generate-image.ts
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
+    return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
   const { prompt } = req.body;
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'Missing OpenAI API key' });
+
+  if (!prompt || typeof prompt !== 'string') {
+    return res.status(400).json({ message: 'Invalid prompt' });
+  }
 
   try {
-    const response = await fetch('https://api.openai.com/v1/images/generations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        prompt: `A beautiful magical floral background: ${prompt}`,
-        n: 1,
-        size: '1024x1024',
-      }),
-    });
+    // Replace this with real image generation later
+    const placeholderImage = 'https://source.unsplash.com/800x600/?flowers,nature,magic';
 
-    if (!response.ok) {
-      const err = await response.text();
-      throw new Error(err);
-    }
-
-    const data = await response.json();
-    const imageUrl = data.data[0].url;
-    res.status(200).json({ imageUrl });
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    res.status(200).json({ imageUrl: placeholderImage });
+  } catch (error) {
+    console.error("Image generation failed", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 }
