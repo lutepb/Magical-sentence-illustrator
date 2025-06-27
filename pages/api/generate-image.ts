@@ -1,23 +1,23 @@
-// pages/api/generate-image.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method Not Allowed" });
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
   const { prompt } = req.body;
 
-  if (!prompt || typeof prompt !== "string") {
-    return res.status(400).json({ message: "Invalid prompt" });
+  if (!prompt || typeof prompt !== 'string') {
+    return res.status(400).json({ message: 'Invalid prompt' });
   }
 
   try {
-    // This placeholder image simulates AI-generated output
-    const imageUrl = "https://source.unsplash.com/800x600/?flowers,nature,magic";
+    // Replace with real AI integration or use a placeholder for now
+    const encodedPrompt = encodeURIComponent(prompt);
+    const imageUrl = `https://source.unsplash.com/800x600/?flowers,plants,magic,${encodedPrompt}`;
 
     return res.status(200).json({ imageUrl });
-  } catch (err) {
-    console.error("Image generation failed", err);
-    return res.status(500).json({ message: "Internal Server Error" });
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal server error' });
   }
 }
